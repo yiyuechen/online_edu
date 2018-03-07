@@ -31,7 +31,7 @@ class Course(models.Model):
 
 # 章节
 class Lesson(models.Model):
-    # 一个课程有多个章节。在这里把课程Course设置为外健
+    # 一个课程有多个章节。在这里把课程Course设置为外键
     course = models.ForeignKey(Course, verbose_name=u'课程')
     name = models.CharField(max_length=100, verbose_name=u'章节名')
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u'添加时间')
