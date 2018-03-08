@@ -32,12 +32,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'users',
-    'courses',
-    'operation',
-    'organizations',
-    'xadmin',
+    'users.apps.UsersConfig',
+    'courses.apps.CoursesConfig',
+    'operation.apps.OperationConfig',
+    'organizations.apps.OrganizationsConfig',
+    'xadmin.apps.XAdminConfig',
     'crispy_forms',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
