@@ -22,7 +22,7 @@ class UserProfile(AbstractUser):
     image = models.ImageField(
         upload_to='image/%Y/%m',
         default=u'image/default.png',
-        max_length=100
+        max_length=135
     )
 
     class Meta:
