@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'operation.apps.OperationConfig',
     'organizations.apps.OrganizationsConfig',
     'xadmin.apps.XAdminConfig',
+    'captcha',
     'crispy_forms',
 
     'django.contrib.admin',
@@ -136,3 +137,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+EMAIL_HOST = "smtp.sina.com"
+EMAIL_PORT = 25
+EMAIL_HOST_USER = "lv@sina.com"
+EMAIL_HOST_PASSWORD = "secret"
+EMAIL_USER_TLS = True
+EMAIL_FROM = "lv@sina.com" # must equal to EMAIL_HOST_USER
+
