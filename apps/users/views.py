@@ -67,14 +67,17 @@ class RegisterView(View):
             password = request.POST.get('password', '')
 
             user_profile = UserProfile()
-            user_profile.username=username
-            user_profile.password=make_password(password)
+            user_profile.username = username
+            user_profile.password = make_password(password)
             # 默认激活状态为false
             user_profile.is_active = False
             user_profile.save()
             # 发送验证
-            send_register_email(username,'register')
-            pass
+            send_register_email(username, 'register')
+            return render(request, 'login.html')
+        else:
+            return render(request, 'register.html',
+                          {'register_form': register_form})
 
 # class ActiveUserView(View):
 #     def get(self, request, active_code):
