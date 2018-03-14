@@ -46,8 +46,11 @@ class LoginView(View):
             user = authenticate(username=username, password=password)
 
             if user is not None:
-                login(request, user)
-                return render(request, 'index.html')
+                if user.is_active:
+                    login(request, user)
+                    return render(request, 'index.html')
+                else:
+                    return render(request, 'login.html', {'msg': '你还未激活账户'})
             else:
                 return render(request, 'login.html', {'msg': '用户名或密码错误'})
         else:
@@ -68,6 +71,7 @@ class RegisterView(View):
 
             user_profile = UserProfile()
             user_profile.username = username
+            user_profile.email = username
             user_profile.password = make_password(password)
             # 默认激活状态为false
             user_profile.is_active = False
@@ -79,7 +83,15 @@ class RegisterView(View):
             return render(request, 'register.html',
                           {'register_form': register_form})
 
-# class ActiveUserView(View):
-#     def get(self, request, active_code):
-#         all_record=EmailVerifyRecord.objects.filter(code=active_code)
-#         active_form = ActiveForm(request.GET)
+
+class ActiveUserView(View):
+    def get(self, request, active_code):
+        all_records = EmailVerifyRecord.objects.filter(code=active_code)
+        if all_records:
+            for record in all_records:
+                email = record.email
+                # get the user obj with the right email. notice that userprofile is inherited
+                user = UserProfile.objects.get(email=email)
+                user.is_active = True
+                user.save()
+            return render(request, 'login.html')
