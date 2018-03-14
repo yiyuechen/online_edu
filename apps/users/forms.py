@@ -13,6 +13,16 @@ class LoginForm(forms.Form):
 
 
 class RegisterForm(forms.Form):
-    email=forms.EmailField(required=True)
-    password=forms.CharField(required=True, min_length=5)
+    email = forms.EmailField(required=True)
+    password = forms.CharField(required=True, min_length=5)
     captcha = CaptchaField()
+
+
+class ForgetForm(forms.Form):
+    email = forms.EmailField(required=True)
+    captcha = CaptchaField()
+
+class ModifyPwdForm(forms.Form):
+    email = forms.EmailField(required=False)
+    password1 = forms.EmailField(required=True, min_length=6)
+    password2 = forms.EmailField(required=True, min_length=6)
