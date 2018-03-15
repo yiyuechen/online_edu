@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'xadmin.apps.XAdminConfig',
     'captcha',
     'crispy_forms',
+    'pure_pagination',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -150,3 +151,8 @@ EMAIL_HOST_PASSWORD = ""
 EMAIL_USER_TLS = True
 EMAIL_FROM = "lan@sina.com" # must equal to EMAIL_HOST_USER
 
+PAGINATION_SETTINGS = {
+    'PAGE_RANGE_DISPLAYED': 10,
+    'MARGIN_PAGES_DISPLAYED': 2,
+    'SHOW_FIRST_PAGE_WHEN_INVALID': True,
+}
