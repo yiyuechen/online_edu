@@ -22,7 +22,7 @@ class ForgetForm(forms.Form):
     email = forms.EmailField(required=True)
     captcha = CaptchaField()
 
+
 class ModifyPwdForm(forms.Form):
-    email = forms.EmailField(required=False)
-    password1 = forms.EmailField(required=True, min_length=6)
-    password2 = forms.EmailField(required=True, min_length=6)
+    password1 = forms.CharField(required=True, min_length=5)
+    password2 = forms.CharField(required=True, min_length=5)
