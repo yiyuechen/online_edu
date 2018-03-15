@@ -21,6 +21,7 @@ from django.conf.urls import include
 import xadmin
 from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, \
     ResetView, ModifyPwdView
+from organizations.views import OrgView
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -36,4 +37,7 @@ urlpatterns = [
     re_path('reset/(?P<active_code>.*)/', ResetView.as_view(),
             name='reset_pwd'),
     path('modify/', ModifyPwdView.as_view(), name='modify_pwd'),
+
+    # 机构列表页
+    path('org_list/', OrgView.as_view(), name='org_list'),
 ]
