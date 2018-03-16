@@ -10,6 +10,19 @@ class OrgView(View):
     def get(self, request):
         orgs = CourseOrg.objects.all()
         cities = CityDict.objects.all()
+
+        # 在前端选择城市，传到city_id，作为筛选，默认为空
+        city_id = request.GET.get('city', '')
+        # 如果city_id不是空，说明做了选择
+        if city_id:
+            orgs = orgs.filter(city_id=city_id)
+
+        # 在前端选择组织类别，传到category，作为筛选，默认为空
+        category = request.GET.get('ct','')
+        if category:
+            orgs = orgs.filter(category=category)
+
+        # 完成筛选之后，再统计
         org_total_num = orgs.count()
 
         # 对课程机构进行分页
@@ -23,9 +36,10 @@ class OrgView(View):
         p = Paginator(orgs, 2, request=request)
         orgs = p.page(page)
 
-
         return render(request, 'org-list.html', {
             'orgs': orgs,
             'cities': cities,
             'org_total_num': org_total_num,
+            'city_id': city_id,
+            'category': category,
         })
