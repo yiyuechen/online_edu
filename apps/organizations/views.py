@@ -9,6 +9,10 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 class OrgView(View):
     def get(self, request):
         orgs = CourseOrg.objects.all()
+
+        #热门的机构，排名后取前三个
+        hot_orgs = orgs.order_by("-click_nums")[:3]
+
         cities = CityDict.objects.all()
 
         # 在前端选择城市，传到city_id，作为筛选，默认为空
@@ -42,4 +46,5 @@ class OrgView(View):
             'org_total_num': org_total_num,
             'city_id': city_id,
             'category': category,
+            'hot_orgs': hot_orgs,
         })
