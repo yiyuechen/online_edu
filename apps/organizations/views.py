@@ -77,7 +77,9 @@ class AddUserAskView(View):
 
 class OrgHomeView(View):
     """机构首页"""
+
     def get(self, request, org_id):
+        current_page = 'home'
         course_org = CourseOrg.objects.get(id=int(org_id))
         courses = course_org.course_set.all()[:3]
         teachers = course_org.teacher_set.all()[:1]
@@ -85,4 +87,45 @@ class OrgHomeView(View):
             'courses': courses,
             'teachers': teachers,
             'course_org': course_org,
+            'current_page': current_page,
+        })
+
+
+class OrgCourseView(View):
+    """机构课程页"""
+
+    def get(self, request, org_id):
+        current_page = 'course'
+        course_org = CourseOrg.objects.get(id=int(org_id))
+        # 因为是课程页，取出全部课程
+        courses = course_org.course_set.all()
+        return render(request, 'org-detail-course.html', {
+            'courses': courses,
+            'course_org': course_org,
+            'current_page': current_page,
+        })
+
+
+class OrgDescView(View):
+    """机构详情页"""
+
+    def get(self, request, org_id):
+        current_page = 'desc'
+        course_org = CourseOrg.objects.get(id=int(org_id))
+        return render(request, 'org-detail-desc.html', {
+            'course_org': course_org,
+            'current_page': current_page,
+        })
+
+
+class OrgTeacherView(View):
+
+    def get(self, request, org_id):
+        current_page = 'teachers'
+        course_org = CourseOrg.objects.get(id=int(org_id))
+        teachers = course_org.teacher_set.all()
+        return render(request, 'org-detail-teachers.html', {
+            'course_org': course_org,
+            'current_page': current_page,
+            'teachers': teachers,
         })
