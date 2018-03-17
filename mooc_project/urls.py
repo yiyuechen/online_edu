@@ -40,9 +40,10 @@ urlpatterns = [
             name='reset_pwd'),
     path('modify/', ModifyPwdView.as_view(), name='modify_pwd'),
 
-    # 机构列表页
-    path('org_list/', OrgView.as_view(), name='org_list'),
+    # 包含机构列表页
+    path('org/', include('organizations.urls', namespace='organizations')),
+
     # 配置上传文件图片的处理
     # re_path('media/(?P<path>.*)/', serve, {'document_root': MEDIA_ROOT}),
-    re_path(r'^media/(?P<path>.*)', serve, {"document_root": MEDIA_ROOT }),
+    re_path(r'^media/(?P<path>.*)', serve, {"document_root": MEDIA_ROOT}),
 ]

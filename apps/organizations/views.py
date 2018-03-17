@@ -1,7 +1,9 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import View
 from .models import CourseOrg, CityDict
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
+from .forms import UserAskForm
 
 
 # Create your views here.
@@ -10,7 +12,7 @@ class OrgView(View):
     def get(self, request):
         orgs = CourseOrg.objects.all()
 
-        #热门的机构，排名后取前三个
+        # 热门的机构，排名后取前三个
         hot_orgs = orgs.order_by("-click_nums")[:3]
 
         cities = CityDict.objects.all()
@@ -22,18 +24,17 @@ class OrgView(View):
             orgs = orgs.filter(city_id=city_id)
 
         # 在前端选择组织类别，传到category，作为筛选，默认为空
-        category = request.GET.get('ct','')
+        category = request.GET.get('ct', '')
         if category:
             orgs = orgs.filter(category=category)
 
         # 由学习人数和课程数进行排序筛选
-        sort = request.GET.get('sort','')
+        sort = request.GET.get('sort', '')
         if sort:
             if sort == 'students':
                 orgs = orgs.order_by("-students")
             elif sort == 'courses':
                 orgs = orgs.order_by("-course_nums")
-
 
         # 完成筛选之后，再统计
         org_total_num = orgs.count()
@@ -58,3 +59,17 @@ class OrgView(View):
             'hot_orgs': hot_orgs,
             'sort': sort
         })
+
+
+class AddUserAskView(View):
+    def post(self, request):
+        user_ask_form = UserAskForm(request.POST)
+        if user_ask_form.is_valid():
+            # 当commit为true进行真正保存
+            user_ask = user_ask_form.save(commit=True)
+            # 如果保存成功,则返回json字符串为sucess,后面content type是告诉浏览器信息类型
+            return HttpResponse("{'status': 'success', 'msg':'添加成功'}",
+                                content_type='application/json')
+        else:
+            return HttpResponse("{'status':'fail', 'msg':'添加出错'}",
+                                content_type='application/json')
