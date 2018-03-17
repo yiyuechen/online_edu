@@ -73,3 +73,16 @@ class AddUserAskView(View):
         else:
             return HttpResponse("{'status':'fail', 'msg':'添加出错'}",
                                 content_type='application/json')
+
+
+class OrgHomeView(View):
+    """机构首页"""
+    def get(self, request, org_id):
+        course_org = CourseOrg.objects.get(id=int(org_id))
+        courses = course_org.course_set.all()[:3]
+        teachers = course_org.teacher_set.all()[:1]
+        return render(request, 'org-detail-homepage.html', {
+            'courses': courses,
+            'teachers': teachers,
+            'course_org': course_org,
+        })
