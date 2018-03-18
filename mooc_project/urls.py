@@ -43,6 +43,9 @@ urlpatterns = [
     # 包含机构列表页
     path('org/', include('organizations.urls', namespace='organizations')),
 
+    # 包含课程列表页
+    path('course/', include('courses.urls', namespace='courses')),
+
     # 配置上传文件图片的处理
     # re_path('media/(?P<path>.*)/', serve, {'document_root': MEDIA_ROOT}),
     re_path(r'^media/(?P<path>.*)', serve, {"document_root": MEDIA_ROOT}),
