@@ -32,7 +32,7 @@
 
 					</div>
 					<div class="des">
-						<h1 title="django 从入门到精通体验开始了">{{ course.name }}</h1>
+						<h1>{{ course.name }}</h1>
 						<span class="key">{{ course.desc }}</span>
 						<div class="prize">
 							<span class="fl">难度：<i class="key">{{ course.get_degree_display }}</i></span>
@@ -50,7 +50,7 @@
 						</ul>
 						<div class="btns">
 							<div class="btn colectgroupbtn"  id="jsLeftBtn">
-                                  收藏
+                                  {% ifequal has_fav_course True %}已收藏{% else %}收藏{% endifequal %}
                             </div>
                                 <div class="buy btn"><a style="color: white" href="course-video.html">开始学习</a></div>
 						</div>
@@ -86,7 +86,7 @@
                     </a>
 					<div class="btn  notlogin
 					     "data-favid="14" id="jsRightBtn">
-                         已收藏
+                         {% ifequal has_fav_org True %}已收藏{% else %}收藏{% endifequal %}
                     </div>
 					<div class="clear">
 						<ul>
@@ -131,24 +131,64 @@
 			<div class="right layout">
 				<div class="head">相关课程推荐</div>
                 <div class="group_recommend">
-
+                    {% for course in related_courses %}
                         <dl>
                             <dt>
                                 <a target="_blank" href="">
-                                    <img width="240" height="220" class="scrollLoading" src="../media/courses/2016/11/540e57300001d6d906000338-240-135_mvvGYHL.jpg"/>
+                                    <img width="240" height="220" class="scrollLoading" src="{{ MEDIA_URL }}{{ course.image }}"/>
                                 </a>
                             </dt>
                             <dd>
-                                <a target="_blank" href=""><h2> django实战项目</h2></a>
-                                <span class="fl">学习时长：<i class="key">0</i></span>
+                                <a target="_blank" href=""><h2> {{ course.name }}</h2></a>
+                                <span class="fl">学习时长：<i class="key">{{ course.learning_time }}</i></span>
                             </dd>
                         </dl>
-
-
-
+                    {% endfor %}
                 </div>
 			</div>
 		</div>
 	</div>
 </section>
+{% endblock %}
+
+{% block custom_js %}
+<script type="text/javascript">
+
+//收藏分享
+function add_fav(current_elem, fav_id, fav_type){
+    $.ajax({
+        cache: false,
+        type: "POST",
+        url:"{% url 'organizations:add_fav' %}",
+        data:{'fav_id':fav_id, 'fav_type':fav_type},
+        dataType:"text",
+        async: true,
+        beforeSend:function(xhr, settings){
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        },
+        success: function(data) {
+            if(data.status == 'fail'){
+                if(data.msg == '用户未登录'){
+                    window.location.href="{% url 'login' %}";
+                }else{
+                    alert(data.msg)
+                }
+
+            }else if(data.status == 'success'){
+                current_elem.text(data.msg)
+            }
+        }
+    });
+}
+
+$('#jsLeftBtn').on('click', function(){
+    add_fav($(this), {{ course.id }}, 1)
+});
+
+$('#jsRightBtn').on('click', function(){
+    add_fav($(this), {{ course.course_org.id }}, 2)
+});
+
+</script>
+
 {% endblock %}
