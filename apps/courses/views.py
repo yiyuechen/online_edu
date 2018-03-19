@@ -2,8 +2,10 @@ from django.shortcuts import render
 from django.views.generic import View
 from courses.models import Course, CourseResource
 
+from django.http import HttpResponse
+
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
-from operation.models import UserFavorite
+from operation.models import UserFavorite, CourseComments
 
 
 class CourseListView(View):
@@ -52,8 +54,9 @@ class CourseDetailView(View):
         if request.user.is_authenticated:
             if UserFavorite.objects.filter(user=request.user, fav_id=course.id,
                                            fav_type=1):
-                has_fav_course =True
-            if UserFavorite.objects.filter(user=request.user, fav_id=course.course_org.id,
+                has_fav_course = True
+            if UserFavorite.objects.filter(user=request.user,
+                                           fav_id=course.course_org.id,
                                            fav_type=2):
                 has_fav_org = True
 
@@ -85,7 +88,42 @@ class CourseInfoView(View):
         course_resource = CourseResource.objects.filter(course=course)
         # ?
         # course_resource = CourseResource.objects.get(id=course_id)
-        return render(request, 'course-video.html',{
+        return render(request, 'course-video.html', {
             'course': course,
             'course_resource': course_resource
         })
+
+
+class CourseCommentsView(View):
+    def get(self, request, course_id):
+        course = Course.objects.get(id=course_id)
+        course_resource = CourseResource.objects.filter(course=course)
+        comments = CourseComments.objects.all()
+        return render(request, 'course-comment.html', {
+            'course': course,
+            'course_resource': course_resource,
+            'comments': comments
+        })
+
+
+class AddCommentsView(View):
+    """添加课程评论"""
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return HttpResponse('{"status":"fail", "msg":"用户未登录"}',
+                                content_type='application/json')
+        course_id = request.POST.get("course_id", 0)
+        comments = request.POST.get("comments", "")
+        if int(course_id) > 0 and comments:
+            course_comment = CourseComments()
+            # get只取出一条，如果满足多条或没有，就异常，filter返回数组，不会抛异常
+            course = Course.objects.get(id=int(course_id))
+            course_comment.course = course
+            course_comment.comments = comments
+            course_comment.user = request.user
+            course_comment.save()
+            return HttpResponse('{"status":"success", "msg":"添加成功"}',
+                                content_type='application/json')
+        else:
+            return HttpResponse('{"status":"fail", "msg":"添加失败"}',
+                                content_type='application/json')
