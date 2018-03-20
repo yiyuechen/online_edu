@@ -5,7 +5,8 @@ from courses.models import Course, CourseResource
 from django.http import HttpResponse
 
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
-from operation.models import UserFavorite, CourseComments
+from operation.models import UserFavorite, CourseComments, UserCourse
+from utils.mixin_utils import LoginRequiredMixin
 
 
 class CourseListView(View):
@@ -82,19 +83,34 @@ class CourseDetailView(View):
         })
 
 
-class CourseInfoView(View):
+class CourseInfoView(LoginRequiredMixin, View):
+    """课程章节信息"""
     def get(self, request, course_id):
         course = Course.objects.get(id=course_id)
         course_resource = CourseResource.objects.filter(course=course)
         # ?
         # course_resource = CourseResource.objects.get(id=course_id)
+
+        # 先根据course对应实例化一个user_courses的操作类
+        user_courses = UserCourse.objects.filter(course=course)
+        # 把这个实例中的所有对应的用户取出来，放入user_ids
+        user_ids = [user_course.user.id for user_course in user_courses]
+        # 使用了__in规则表示只要user_id等于user_ids数组中的任何一个，都满足
+        all_user_courses = UserCourse.objects.filter(user_id__in=user_ids)
+        # 取出所有课程ID
+        course_ids = [user_course.course.id for user_course in user_courses]
+        # 获取其他课程
+        related_courses = Course.objects.filter(id__in=course_ids).order_by(
+            "-click_nums")[:5]
         return render(request, 'course-video.html', {
             'course': course,
-            'course_resource': course_resource
+            'course_resource': course_resource,
+            'user_courses': user_courses,
+            'related_courses': related_courses
         })
 
 
-class CourseCommentsView(View):
+class CourseCommentsView(LoginRequiredMixin, View):
     def get(self, request, course_id):
         course = Course.objects.get(id=course_id)
         course_resource = CourseResource.objects.filter(course=course)
@@ -108,6 +124,7 @@ class CourseCommentsView(View):
 
 class AddCommentsView(View):
     """添加课程评论"""
+
     def post(self, request):
         if not request.user.is_authenticated:
             return HttpResponse('{"status":"fail", "msg":"用户未登录"}',
