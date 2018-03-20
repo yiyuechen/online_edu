@@ -85,11 +85,22 @@ class CourseDetailView(View):
 
 class CourseInfoView(LoginRequiredMixin, View):
     """课程章节信息"""
+
     def get(self, request, course_id):
         course = Course.objects.get(id=course_id)
         course_resource = CourseResource.objects.filter(course=course)
         # ?
         # course_resource = CourseResource.objects.get(id=course_id)
+
+        # 先在user_course表中查询这个用户是否已经关联这个课程，如果不是的话，就保存一条关联记录
+        user_courses = UserCourse.objects.filter(
+            user=request.user,
+            course=course
+        )
+
+        if not user_courses:
+            user_course = UserCourse(user=request.user, course=course)
+            user_course.save()
 
         # 先根据course对应实例化一个user_courses的操作类
         user_courses = UserCourse.objects.filter(course=course)
@@ -98,7 +109,8 @@ class CourseInfoView(LoginRequiredMixin, View):
         # 使用了__in规则表示只要user_id等于user_ids数组中的任何一个，都满足
         all_user_courses = UserCourse.objects.filter(user_id__in=user_ids)
         # 取出所有课程ID
-        course_ids = [user_course.course.id for user_course in user_courses]
+        course_ids = [user_course.course.id for user_course in
+                      all_user_courses]
         # 获取其他课程
         related_courses = Course.objects.filter(id__in=course_ids).order_by(
             "-click_nums")[:5]
