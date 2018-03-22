@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import View
-from courses.models import Course, CourseResource
+from courses.models import Course, CourseResource, Video
 
 from django.http import HttpResponse
 
@@ -156,3 +156,43 @@ class AddCommentsView(View):
         else:
             return HttpResponse('{"status":"fail", "msg":"添加失败"}',
                                 content_type='application/json')
+
+
+# 播放视频的view
+class VideoPlayView(LoginRequiredMixin, View):
+    login_url = '/login/'
+    redirect_field_name = 'next'
+
+    def get(self, request, video_id):
+        # id是数据表里面默认为我们添加的值。
+        video = Video.objects.get(id=int(video_id))
+        # 找到对应的course
+        course = video.lesson.course
+        # 查询用户是否开始学习了该课
+        user_courses = UserCourse.objects.filter(user=request.user,
+                                                 course=course)
+        # 如果还未学习则加入用户课程表
+        if not user_courses:
+            user_course = UserCourse(user=request.user, course=course)
+            user_course.save()
+        # 查询课程资源
+        all_resources = CourseResource.objects.filter(course=course)
+        # 选出学了这门课的学生关系
+        user_courses = UserCourse.objects.filter(course=course)
+        # 从关系中取出user_id
+        user_ids = [user_course.user_id for user_course in user_courses]
+        # 这些用户学了的课程,外键会自动有id，取到字段
+        all_user_courses = UserCourse.objects.filter(user_id__in=user_ids)
+        # 取出所有课程id
+        course_ids = [user_course.course_id for user_course in
+                      all_user_courses]
+        # 获取学过该课程用户学过的其他课程
+        related_courses = Course.objects.filter(id__in=course_ids).order_by(
+            "-click_nums").exclude(id=course.id)[:4]
+        # 是否收藏课程
+        return render(request, "course-play.html", {
+            "course": course,
+            "all_resources": all_resources,
+            "related_courses": related_courses,
+            "video": video,
+        })
