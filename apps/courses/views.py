@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import View
 from courses.models import Course, CourseResource, Video
+from django.db.models import Q
 
 from django.http import HttpResponse
 
@@ -14,6 +15,12 @@ class CourseListView(View):
         courses = Course.objects.all().order_by("-add_time")
         # 右侧栏热门课程
         hot_courses = Course.objects.all().order_by("-click_nums")[:3]
+
+        search_keywords = request.GET.get('keywords', '')
+        if search_keywords:
+            courses = courses.filter(Q(name__icontains=search_keywords) | Q(
+                desc__icontains=search_keywords) | Q(
+                detail__icontains=search_keywords))
 
         # 由学习人数和课程数进行排序筛选
         sort = request.GET.get('sort', '')

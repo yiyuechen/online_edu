@@ -7,6 +7,7 @@ from .forms import UserAskForm
 from operation.models import UserFavorite
 from organizations.models import Teacher
 from courses.models import Course
+from django.db.models import Q
 
 
 # Create your views here.
@@ -19,6 +20,11 @@ class OrgView(View):
         hot_orgs = orgs.order_by("-click_nums")[:3]
 
         cities = CityDict.objects.all()
+
+        search_keywords = request.GET.get('keywords', '')
+        if search_keywords:
+            orgs = orgs.filter(Q(name__icontains=search_keywords) | Q(
+                desc__icontains=search_keywords))
 
         # 在前端选择城市，传到city_id，作为筛选，默认为空
         city_id = request.GET.get('city', '')
@@ -211,6 +217,10 @@ class TeacherListView(View):
     def get(self, request):
         teachers = Teacher.objects.all()
         teacher_num = teachers.count()
+
+        search_keywords = request.GET.get('keywords', '')
+        if search_keywords:
+            teachers = teachers.filter(name__icontains=search_keywords)
 
         # 按照人气排序
         sort = request.GET.get('sort', '')
