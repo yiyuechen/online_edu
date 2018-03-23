@@ -50,7 +50,7 @@
 						</ul>
 						<div class="btns">
 							<div class="btn colectgroupbtn"  id="jsLeftBtn">
-                                  {% ifequal has_fav_course True %}已收藏{% else %}收藏{% endifequal %}
+{#                                  {% ifequal has_fav_course True %}已收藏{% else %}收藏{% endifequal %}#}
                             </div>
                                 <div class="buy btn"><a style="color: white" href="{% url 'courses:course_info' course.id %}">开始学习</a></div>
 						</div>
@@ -86,7 +86,7 @@
                     </a>
 					<div class="btn  notlogin
 					     "data-favid="14" id="jsRightBtn">
-                         {% ifequal has_fav_org True %}已收藏{% else %}收藏{% endifequal %}
+{#                         {% ifequal has_fav_org True %}已收藏{% else %}收藏{% endifequal %}#}
                     </div>
 					<div class="clear">
 						<ul>

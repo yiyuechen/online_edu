@@ -6,6 +6,7 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from .forms import UserAskForm
 from operation.models import UserFavorite
 from organizations.models import Teacher
+from courses.models import Course
 
 
 # Create your views here.
@@ -234,4 +235,29 @@ class TeacherListView(View):
             'teacher_num': teacher_num,
             'sort': sort,
             'hottest_teachers': hottest_teachers,
+        })
+
+
+class TeacherDetailView(View):
+    def get(self, request, teacher_id):
+        teacher = Teacher.objects.get(id=int(teacher_id))
+        courses = Course.objects.filter(teacher=teacher)
+        hottest_teachers = Teacher.objects.all().order_by('click_nums')[:3]
+
+        # 在html页面判断是否已经收藏讲师
+        has_fav_teacher = False
+        if UserFavorite.objects.filter(user=request.user, fav_type=3, fav_id=int(teacher.id)):
+            has_fav_teacher = True
+
+        # 在html页面判断是否已经收藏机构
+        has_fav_org = False
+        if UserFavorite.objects.filter(user=request.user, fav_type=2, fav_id=int(teacher.org.id)):
+            has_fav_org = True
+
+        return render(request, 'teacher-detail.html',{
+            'teacher': teacher,
+            'courses': courses,
+            'hottest_teachers': hottest_teachers,
+            'has_fav_org': has_fav_org,
+            'has_fav_teacher': has_fav_teacher,
         })
