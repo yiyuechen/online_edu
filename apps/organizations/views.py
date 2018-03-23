@@ -5,6 +5,7 @@ from .models import CourseOrg, CityDict
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from .forms import UserAskForm
 from operation.models import UserFavorite
+from organizations.models import Teacher
 
 
 # Create your views here.
@@ -203,3 +204,34 @@ class AddFavView(View):
             else:
                 return HttpResponse("{'status':'fail', 'msg':'收藏出错'}",
                                     content_type='application/json')
+
+
+class TeacherListView(View):
+    def get(self, request):
+        teachers = Teacher.objects.all()
+        teacher_num = teachers.count()
+
+        # 按照人气排序
+        sort = request.GET.get('sort', '')
+        if sort:
+            if sort == 'hot':
+                teachers = teachers.order_by("-click_nums")
+
+        # 讲师排行前三位
+        hottest_teachers = Teacher.objects.all().order_by('click_nums')[:3]
+
+        # 分页
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+        # 这里取3个出来，每页显示3个
+        p = Paginator(teachers, 1, request=request)
+        teachers = p.page(page)
+
+        return render(request, 'teachers-list.html', {
+            'teachers': teachers,
+            'teacher_num': teacher_num,
+            'sort': sort,
+            'hottest_teachers': hottest_teachers,
+        })

@@ -2,7 +2,7 @@
 # @Author  : yiyue
 
 from organizations.views import OrgView, AddUserAskView, OrgHomeView, \
-    OrgCourseView, OrgDescView, OrgTeacherView, AddFavView
+    OrgCourseView, OrgDescView, OrgTeacherView, AddFavView, TeacherListView
 from django.urls import path, re_path
 
 app_name = 'organizations'
@@ -16,6 +16,8 @@ urlpatterns = [
     re_path('desc/(?P<org_id>\d+.*)/', OrgDescView.as_view(), name='org_desc'),
     re_path('teacher/(?P<org_id>\d+.*)/', OrgTeacherView.as_view(),
             name='org_teacher'),
+
+    path('teacher/list/', TeacherListView.as_view(), name='teacher_list' ),
 
     # 添加收藏
     path('add_fav/', AddFavView.as_view(), name='add_fav'),

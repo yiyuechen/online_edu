@@ -74,7 +74,7 @@
 
                             {% for video in lesson.video_set.get_queryset  %}
                             <li>
-                                <a target="_blank" href='{% url 'courses:video_play' video.id %}' class="J-media-item studyvideo">{{ video.name }} ({{ video.learning_time }})
+                                <a href='{% url 'courses:video_play' video.id %}' class="J-media-item studyvideo">{{ video.name }} ({{ video.learning_time }})
                                     <i class="study-state"></i>
                                 </a>
                             </li>
