@@ -46,6 +46,9 @@ urlpatterns = [
     # 包含课程列表页
     path('course/', include('courses.urls', namespace='courses')),
 
+    # 用户信息页面
+    path('users/', include('users.urls', namespace='users')),
+
     # 配置上传文件图片的处理
     # re_path('media/(?P<path>.*)/', serve, {'document_root': MEDIA_ROOT}),
     re_path(r'^media/(?P<path>.*)', serve, {"document_root": MEDIA_ROOT}),
