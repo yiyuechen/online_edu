@@ -42,6 +42,12 @@ def send_register_email(email, send_type='register'):
         email_title = "localhost_mooc找回密码链接"
         email_body = "请点击下面的链接找回你的密码: http://127.0.0.1:8000/reset/{0}".format(
             code)
+
+    elif send_type == 'update_email':
+        email_title = "localhost_mooc修改邮箱"
+        email_body = "邮箱验证码为: {0}".format(code)
+
+
     else:
         return False
     # 使用Django内置函数完成邮件发送。四个参数：主题，邮件内容，从哪里发，接受者list

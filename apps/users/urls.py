@@ -2,12 +2,23 @@
 # @Author  : yiyue
 
 from django.urls import path, re_path
-from users.views import UserInfoView, UploadImageView, UpdatePwdView
+from users.views import UserInfoView, UploadImageView, UpdatePwdView, \
+    SendEmailCodeView, UpdateEmailView
 
 app_name = 'users'
 
 urlpatterns = [
+    # user info
     path('user_info/', UserInfoView.as_view(), name='user_info'),
+    # upload user avatar
     path('image/upload/', UploadImageView.as_view(), name="image_upload"),
+    # update user password in user center
     path('update/pwd/', UpdatePwdView.as_view(), name="update_pwd"),
+    # send code to reset email
+    path('send_email_code/', SendEmailCodeView.as_view(),
+         name="send_email_code"),
+    # send code to reset email
+    path('update_email/', UpdateEmailView.as_view(),
+         name="update_email"),
+
 ]
