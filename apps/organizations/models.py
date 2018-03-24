@@ -78,3 +78,6 @@ class Teacher(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_course_total_num(self):
+        return self.course_set.count()

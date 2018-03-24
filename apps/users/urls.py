@@ -2,8 +2,9 @@
 # @Author  : yiyue
 
 from django.urls import path, re_path
-from users.views import UserInfoView, UploadImageView, UpdatePwdView, \
-    SendEmailCodeView, UpdateEmailView
+from users.views import UserInfoView, UploadImageView, UpdatePwdView
+from users.views import SendEmailCodeView, UpdateEmailView, MyCourseView
+from users.views import MyFavOrgs, MyFavTeachers, MyFavCourses
 
 app_name = 'users'
 
@@ -20,5 +21,12 @@ urlpatterns = [
     # send code to reset email
     path('update_email/', UpdateEmailView.as_view(),
          name="update_email"),
-
+    path('mycourse/', MyCourseView.as_view(),
+         name="mycourse"),
+    path('myfav/org/', MyFavOrgs.as_view(),
+         name="fav_org"),
+    path('myfav/teacher/', MyFavTeachers.as_view(),
+         name="fav_teacher"),
+    path('myfav/course/', MyFavCourses.as_view(),
+         name="fav_course"),
 ]

@@ -10,7 +10,10 @@ from .forms import LoginForm, RegisterForm, ForgetForm, ModifyPwdForm
 from utils.email_send import send_register_email
 from utils.mixin_utils import LoginRequiredMixin
 from users.forms import UploadImageForm, UserInfoForm
+from operation.models import UserCourse, UserFavorite
 import json
+from organizations.models import CourseOrg, Teacher
+from courses.models import Course
 
 
 class CustomBackend(ModelBackend):
@@ -254,3 +257,60 @@ class UpdateEmailView(LoginRequiredMixin, View):
         else:
             return HttpResponse("{'email':'验证码出错'}",
                                 content_type='application/json')
+
+
+class MyCourseView(LoginRequiredMixin, View):
+    """个人课程页面"""
+
+    def get(self, request):
+        my_courses = UserCourse.objects.filter(user=request.user)
+        return render(request, 'usercenter-mycourse.html', {
+            'my_courses': my_courses,
+        })
+
+
+class MyFavOrgs(LoginRequiredMixin, View):
+    """个人收藏的机构"""
+
+    def get(self, request):
+        favs = UserFavorite.objects.filter(user=request.user, fav_type=2)
+        fav_org_list = []
+        for fav in favs:
+            org_id = fav.fav_id
+            org = CourseOrg.objects.get(id=org_id)
+            fav_org_list.append(org)
+
+        return render(request, 'usercenter-fav-org.html', {
+            'fav_org_list': fav_org_list,
+        })
+
+
+class MyFavTeachers(LoginRequiredMixin, View):
+    """个人收藏的教师"""
+
+    def get(self, request):
+        favs = UserFavorite.objects.filter(user=request.user, fav_type=3)
+        fav_teacher_list = []
+        for fav in favs:
+            teacher_id = fav.fav_id
+            teacher = Teacher.objects.get(id=teacher_id)
+            fav_teacher_list.append(teacher)
+
+        return render(request, 'usercenter-fav-teacher.html', {
+            'fav_teacher_list': fav_teacher_list,
+        })
+
+class MyFavCourses(LoginRequiredMixin, View):
+    """个人收藏的教师"""
+
+    def get(self, request):
+        favs = UserFavorite.objects.filter(user=request.user, fav_type=1)
+        fav_course_list = []
+        for fav in favs:
+            course_id = fav.fav_id
+            course = Course.objects.get(id=course_id)
+            fav_course_list.append(course)
+
+        return render(request, 'usercenter-fav-course.html', {
+            'fav_course_list': fav_course_list,
+        })
