@@ -10,10 +10,11 @@ from .forms import LoginForm, RegisterForm, ForgetForm, ModifyPwdForm
 from utils.email_send import send_register_email
 from utils.mixin_utils import LoginRequiredMixin
 from users.forms import UploadImageForm, UserInfoForm
-from operation.models import UserCourse, UserFavorite
+from operation.models import UserCourse, UserFavorite, UserMessage
 import json
 from organizations.models import CourseOrg, Teacher
 from courses.models import Course
+from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
 
 class CustomBackend(ModelBackend):
@@ -269,7 +270,7 @@ class MyCourseView(LoginRequiredMixin, View):
         })
 
 
-class MyFavOrgs(LoginRequiredMixin, View):
+class MyFavOrgsView(LoginRequiredMixin, View):
     """个人收藏的机构"""
 
     def get(self, request):
@@ -285,7 +286,7 @@ class MyFavOrgs(LoginRequiredMixin, View):
         })
 
 
-class MyFavTeachers(LoginRequiredMixin, View):
+class MyFavTeachersView(LoginRequiredMixin, View):
     """个人收藏的教师"""
 
     def get(self, request):
@@ -300,7 +301,7 @@ class MyFavTeachers(LoginRequiredMixin, View):
             'fav_teacher_list': fav_teacher_list,
         })
 
-class MyFavCourses(LoginRequiredMixin, View):
+class MyFavCoursesView(LoginRequiredMixin, View):
     """个人收藏的教师"""
 
     def get(self, request):
@@ -313,4 +314,26 @@ class MyFavCourses(LoginRequiredMixin, View):
 
         return render(request, 'usercenter-fav-course.html', {
             'fav_course_list': fav_course_list,
+        })
+
+
+class MyMessageView(LoginRequiredMixin, View):
+    """个人收藏的教师"""
+
+    def get(self, request):
+        all_messages = UserMessage.objects.all()
+
+        # 对消息进行分页
+        # 尝试获取前台get请求传递过来的page参数
+        # 如果是不合法的配置参数默认返回第一页
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+        # 这里指从allorg中取五个出来，每页显示5个
+        p = Paginator(all_messages, 2, request=request)
+        messages = p.page(page)
+
+        return render(request, 'usercenter-message.html', {
+            'messages':messages
         })

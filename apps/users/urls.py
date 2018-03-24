@@ -4,7 +4,8 @@
 from django.urls import path, re_path
 from users.views import UserInfoView, UploadImageView, UpdatePwdView
 from users.views import SendEmailCodeView, UpdateEmailView, MyCourseView
-from users.views import MyFavOrgs, MyFavTeachers, MyFavCourses
+from users.views import MyFavOrgsView, MyFavTeachersView, MyFavCoursesView, \
+    MyMessageView
 
 app_name = 'users'
 
@@ -23,10 +24,12 @@ urlpatterns = [
          name="update_email"),
     path('mycourse/', MyCourseView.as_view(),
          name="mycourse"),
-    path('myfav/org/', MyFavOrgs.as_view(),
+    path('myfav/org/', MyFavOrgsView.as_view(),
          name="fav_org"),
-    path('myfav/teacher/', MyFavTeachers.as_view(),
+    path('myfav/teacher/', MyFavTeachersView.as_view(),
          name="fav_teacher"),
-    path('myfav/course/', MyFavCourses.as_view(),
+    path('myfav/course/', MyFavCoursesView.as_view(),
          name="fav_course"),
+    path('mymessage/', MyMessageView.as_view(),
+         name="mymessage"),
 ]
