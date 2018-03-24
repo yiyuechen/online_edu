@@ -146,10 +146,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 EMAIL_HOST = "smtp.sina.com"
 EMAIL_PORT = 25
-EMAIL_HOST_USER = "lance_vandy@sina.com"
-EMAIL_HOST_PASSWORD = "VictorChen"
+EMAIL_HOST_USER = "@sina.com"
+EMAIL_HOST_PASSWORD = ""
 EMAIL_USER_TLS = True
-EMAIL_FROM = "lance_vandy@sina.com" # must equal to EMAIL_HOST_USER
+EMAIL_FROM = "@sina.com" # must equal to EMAIL_HOST_USER
 
 PAGINATION_SETTINGS = {
     'PAGE_RANGE_DISPLAYED': 10,
