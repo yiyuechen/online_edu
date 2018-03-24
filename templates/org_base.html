@@ -40,47 +40,44 @@
                                 </dl>
                                 <div class="btn">
                                     <a class="personcenter fl" href="{% url 'users:user_info' %}">进入个人中心</a>
-                                    <a class="fr" href="">退出</a>
+                                    <a class="fr" href="{% url 'logout' %}">退出</a>
                                 </div>
                             </div>
                         </div>
                           <a href="">
                             <div class="msg-num"><span id="MsgNum">{{ request.user.unread_nums }}</span></div>
                           </a>
-                </div>
-                          {% else %}
-                        <div class="wp">
-                            <div class="fl"><p>服务电话：<b>23333333</b></p></div>
-                            <!--登录后跳转-->
-                             <a style="color:white" class="fr registerbtn" href="{% url "register" %}">注册</a>
+
+                        {% else %}
+                            <a style="color:white" class="fr registerbtn" href="{% url "register" %}">注册</a>
                             <a style="color:white" class="fr loginbtn" href="{% url 'login'%}?next={{ request.path }}">登录</a>
-                        </div>
-                         {% endif %}
-			</div>
-
-                <div class="middle companyheader">
-                    <div class="wp">
-                        <img class="fl" style="width: 112px;height: 103px" src="{{ MEDIA_URL }}{{ course_org.image }}"/>
-                        <div class="head fl">
-                            <h1>
-                                慕课网
-                                <img src="{% static 'images/authentication.png' %}"/>
-                                <img src="{% static 'images/gold.png' %}"/>
-                            </h1>
-                            <p class="fl">
-                                <span class="fl" style="margin-top:8px;color:#848484;">推荐指数： </span>
-                                <span class="precision company-credit" data-star-scope="5.0"></span>
-                                <span class="key">5.0</span>
-                            </p>
-                        </div>
-                        <div class="btn fr collectionbtn  notlogin
-                             "data-favid="22" data-fav-type="1">
-                             {% if has_fav %}已收藏{% else %}收藏{% endif %}
-                        </div>
-
-                    </div>
+                        {% endif %}
                 </div>
 			</div>
+
+            <div class="middle companyheader">
+                <div class="wp">
+                    <img class="fl" style="width: 112px;height: 103px" src="{{ MEDIA_URL }}{{ course_org.image }}"/>
+                    <div class="head fl">
+                        <h1>
+                            慕课网
+                            <img src="{% static 'images/authentication.png' %}"/>
+                            <img src="{% static 'images/gold.png' %}"/>
+                        </h1>
+                        <p class="fl">
+                            <span class="fl" style="margin-top:8px;color:#848484;">推荐指数： </span>
+                            <span class="precision company-credit" data-star-scope="5.0"></span>
+                            <span class="key">5.0</span>
+                        </p>
+                    </div>
+                    <div class="btn fr collectionbtn  notlogin
+                         "data-favid="22" data-fav-type="1">
+                         {% if has_fav %}已收藏{% else %}收藏{% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </header>
 </section>
 

@@ -1,6 +1,6 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
 from .models import UserProfile, EmailVerifyRecord
 from django.db.models import Q
@@ -63,6 +63,14 @@ class LoginView(View):
                 return render(request, 'login.html', {'msg': '用户名或密码错误'})
         else:
             return render(request, 'login.html', {'login_form': login_form})
+
+
+class LogoutView(View):
+    """user logout"""
+    def get(self, request):
+        logout(request)
+        from django.urls import reverse
+        return HttpResponseRedirect(reverse('index'))
 
 
 class RegisterView(View):

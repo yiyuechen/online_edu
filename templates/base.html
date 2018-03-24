@@ -38,22 +38,19 @@
                                 </dl>
                                 <div class="btn">
                                     <a class="personcenter fl" href="{% url 'users:user_info' %}">进入个人中心</a>
-                                    <a class="fr" href="">退出</a>
+                                    <a class="fr" href="{% url 'logout' %}">退出</a>
                                 </div>
                             </div>
                         </div>
                           <a href="">
                             <div class="msg-num"><span id="MsgNum">{{ request.user.unread_nums }}</span></div>
                           </a>
-                </div>
-                          {% else %}
-                        <div class="wp">
-                            <div class="fl"><p>服务电话：<b>23333333</b></p></div>
-                            <!--登录后跳转-->
-                             <a style="color:white" class="fr registerbtn" href="{% url "register" %}">注册</a>
+
+                        {% else %}
+                            <a style="color:white" class="fr registerbtn" href="{% url "register" %}">注册</a>
                             <a style="color:white" class="fr loginbtn" href="{% url 'login'%}?next={{ request.path }}">登录</a>
-                        </div>
-                         {% endif %}
+                        {% endif %}
+                </div>
 			</div>
 
             <div class="middle">
