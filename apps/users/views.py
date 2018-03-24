@@ -87,6 +87,13 @@ class RegisterView(View):
             # 默认激活状态为false
             user_profile.is_active = False
             user_profile.save()
+
+            #写入欢迎消息
+            user_message = UserMessage()
+            user_message.user = user_profile.id
+            user_message.message = "Welcome to our site."
+            user_message.save()
+
             # 发送验证
             send_register_email(username, 'register')
             return render(request, 'login.html')
@@ -321,7 +328,7 @@ class MyMessageView(LoginRequiredMixin, View):
     """个人收藏的教师"""
 
     def get(self, request):
-        all_messages = UserMessage.objects.all()
+        all_messages = UserMessage.objects.filter(user=request.user.id)
 
         # 对消息进行分页
         # 尝试获取前台get请求传递过来的page参数
