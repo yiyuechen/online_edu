@@ -71,6 +71,7 @@ class LoginView(View):
 
 class LogoutView(View):
     """user logout"""
+
     def get(self, request):
         logout(request)
         from django.urls import reverse
@@ -100,7 +101,7 @@ class RegisterView(View):
             user_profile.is_active = False
             user_profile.save()
 
-            #写入欢迎消息
+            # 写入欢迎消息
             user_message = UserMessage()
             user_message.user = user_profile.id
             user_message.message = "Welcome to our site."
@@ -320,6 +321,7 @@ class MyFavTeachersView(LoginRequiredMixin, View):
             'fav_teacher_list': fav_teacher_list,
         })
 
+
 class MyFavCoursesView(LoginRequiredMixin, View):
     """个人收藏的教师"""
 
@@ -343,7 +345,8 @@ class MyMessageView(LoginRequiredMixin, View):
         all_messages = UserMessage.objects.filter(user=request.user.id)
 
         # 当用户点击消息喇叭后，清空所有未读消息
-        all_unread_messages = UserMessage.objects.filter(user=request.user.id, has_read=False)
+        all_unread_messages = UserMessage.objects.filter(user=request.user.id,
+                                                         has_read=False)
         for message in all_unread_messages:
             message.has_read = True
             message.save()
@@ -360,18 +363,19 @@ class MyMessageView(LoginRequiredMixin, View):
         messages = p.page(page)
 
         return render(request, 'usercenter-message.html', {
-            'messages':messages
+            'messages': messages
         })
 
 
 class IndexView(View):
     def get(self, request):
+        # print(5/0)  #引起服务器错误，以便查看500页面
         # 上部分大尺寸轮播图
         all_banners = Banner.objects.all().order_by('index')
         courses = Course.objects.filter(is_banner=False)[:5]
         banner_courses = Course.objects.filter(is_banner=True)[:3]
         course_orgs = CourseOrg.objects.all()[:15]
-        return render(request, 'index.html',{
+        return render(request, 'index.html', {
             'all_banners': all_banners,
             'courses': courses,
             'banner_courses': banner_courses,

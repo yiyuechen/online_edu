@@ -23,7 +23,7 @@ import xadmin
 from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, \
     ResetView, ModifyPwdView, LogoutView, IndexView
 from organizations.views import OrgView
-from .settings import MEDIA_ROOT
+from mooc_project.settings import MEDIA_ROOT, STATIC_ROOT
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -54,4 +54,9 @@ urlpatterns = [
     # 配置上传文件图片的处理
     # re_path('media/(?P<path>.*)/', serve, {'document_root': MEDIA_ROOT}),
     re_path(r'^media/(?P<path>.*)', serve, {"document_root": MEDIA_ROOT}),
+
+    # 当把debug设置为false后，需要手动配置STATIC
+    re_path(r'^static/(?P<path>.*)', serve, {"document_root": STATIC_ROOT}),
 ]
+
+
