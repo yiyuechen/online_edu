@@ -39,6 +39,10 @@ class Course(models.Model):
     before_diving_in = models.CharField(default='', max_length=400, verbose_name=u'课程须知')
     # 老师告诉你
     teacher_advice = models.CharField(default='', max_length=400, verbose_name=u'老师告诉你')
+
+    # 是否是轮播图
+    is_banner = models.BooleanField(default=False,verbose_name=u'是否轮播')
+
     add_time = models.DateTimeField(default=datetime.now, verbose_name=u'添加时间')
 
     class Meta:

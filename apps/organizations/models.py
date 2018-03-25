@@ -25,6 +25,9 @@ class CourseOrg(models.Model):
                                     ('individual', '个人'), ('college', '高校'),
                                     ('training_agency', '培训机构'))
                                 )
+    #添加一个标签，用于在首页上显示
+    tag = models.CharField(default=u'hiahia', max_length=10, verbose_name=u'机构标签')
+
     click_nums = models.IntegerField(default=0, verbose_name=u'点击数')
     fav_nums = models.IntegerField(default=0, verbose_name=u'收藏数')
     image = models.ImageField(

@@ -21,14 +21,15 @@ from django.conf.urls import include
 # from users.views import user_login
 import xadmin
 from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, \
-    ResetView, ModifyPwdView, LogoutView
+    ResetView, ModifyPwdView, LogoutView, IndexView
 from organizations.views import OrgView
 from .settings import MEDIA_ROOT
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('xadmin/', xadmin.site.urls),
-    path('', TemplateView.as_view(template_name='index.html'), name="index"),
+    # path('', TemplateView.as_view(template_name='index.html'), name="index"),
+    path('', IndexView.as_view(), name='index'),
     # path('login/', user_login, name='login'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),

@@ -68,7 +68,7 @@ class Banner(models.Model):
     image = models.ImageField(
         upload_to='banner/%Y/%m',
         verbose_name=u'轮播图',
-        max_length=100,
+        max_length=300,
     )
     url = models.URLField(max_length=200, verbose_name=u'访问地址')
     index = models.IntegerField(default=100, verbose_name=u'顺序')
