@@ -338,6 +338,12 @@ class MyMessageView(LoginRequiredMixin, View):
     def get(self, request):
         all_messages = UserMessage.objects.filter(user=request.user.id)
 
+        # 当用户点击消息喇叭后，清空所有未读消息
+        all_unread_messages = UserMessage.objects.filter(user=request.user.id, has_read=False)
+        for message in all_unread_messages:
+            message.has_read = True
+            message.save()
+
         # 对消息进行分页
         # 尝试获取前台get请求传递过来的page参数
         # 如果是不合法的配置参数默认返回第一页

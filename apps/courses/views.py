@@ -82,11 +82,23 @@ class CourseDetailView(View):
         else:
             # 如果是空，传一个空数组，否则是空字符串，在html中遍历会出错
             related_courses = []
+
+        is_attended = False
+        # 先在user_course表中查询这个用户是否已经关联这个课程，如果不是的话，就保存一条关联记录
+        user_courses = UserCourse.objects.filter(
+            user=request.user,
+            course=course
+        )
+        if user_courses:
+            is_attended = True
+
+
         return render(request, 'course-detail.html', {
             'course': course,
             'related_courses': related_courses,
             'has_fav_course': has_fav_course,
             'has_fav_org': has_fav_org,
+            'is_attended': is_attended
         })
 
 
@@ -95,6 +107,7 @@ class CourseInfoView(LoginRequiredMixin, View):
 
     def get(self, request, course_id):
         course = Course.objects.get(id=course_id)
+
         course_resource = CourseResource.objects.filter(course=course)
         # ?
         # course_resource = CourseResource.objects.get(id=course_id)
@@ -105,9 +118,13 @@ class CourseInfoView(LoginRequiredMixin, View):
             course=course
         )
 
+        # 如果没有查询到记录，说明用户还未开始学习，则保存一条记录并让学生数加一
         if not user_courses:
             user_course = UserCourse(user=request.user, course=course)
             user_course.save()
+            # 学生数目加一
+            course.students += 1
+            course.save()
 
         # 先根据course对应实例化一个user_courses的操作类
         user_courses = UserCourse.objects.filter(course=course)

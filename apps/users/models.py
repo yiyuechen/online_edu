@@ -36,7 +36,7 @@ class UserProfile(AbstractUser):
         """获取未读消息数量"""
         # 注意必须在这里import，不能在上面
         from operation.models import UserMessage
-        return UserMessage.objects.filter(user=self.id).count()
+        return UserMessage.objects.filter(user=self.id, has_read=False).count()
 
 
 class EmailVerifyRecord(models.Model):
