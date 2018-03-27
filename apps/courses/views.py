@@ -83,22 +83,22 @@ class CourseDetailView(View):
             # 如果是空，传一个空数组，否则是空字符串，在html中遍历会出错
             related_courses = []
 
-        is_attended = False
+        has_attended = False
         # 先在user_course表中查询这个用户是否已经关联这个课程，如果不是的话，就保存一条关联记录
-        user_courses = UserCourse.objects.filter(
-            user=request.user,
-            course=course
-        )
-        if user_courses:
-            is_attended = True
-
+        if request.user.is_authenticated:
+            user_courses = UserCourse.objects.filter(
+                user=request.user,
+                course=course
+            )
+            if user_courses:
+                has_attended = True
 
         return render(request, 'course-detail.html', {
             'course': course,
             'related_courses': related_courses,
             'has_fav_course': has_fav_course,
             'has_fav_org': has_fav_org,
-            'is_attended': is_attended
+            'has_attended': has_attended
         })
 
 
@@ -146,7 +146,7 @@ class CourseInfoView(LoginRequiredMixin, View):
         })
 
 
-class CourseCommentsView(LoginRequiredMixin, View):
+class CourseCommentsView(View):
     def get(self, request, course_id):
         course = Course.objects.get(id=course_id)
         course_resource = CourseResource.objects.filter(course=course)
@@ -158,7 +158,7 @@ class CourseCommentsView(LoginRequiredMixin, View):
         })
 
 
-class AddCommentsView(View):
+class AddCommentsView(LoginRequiredMixin, View):
     """添加课程评论"""
 
     def post(self, request):

@@ -58,6 +58,7 @@
                                     {% for city in cities %} {# stringformat:"i" convert int to string #}
                                         <a href="?city={{ city.id }}&ct={{ category }}"><span class="{% ifequal city.id|stringformat:"i" city_id  %}active2{% endifequal %}">{{ city.name }}</span></a>
                                     {% endfor %}
+
                         </div>
                     </li>
                 </ul>
